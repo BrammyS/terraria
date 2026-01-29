@@ -14,7 +14,6 @@ RUN set -eux; \
     unzip "${SERVER_PATH}.zip" -d "${SERVER_PATH}"; \
     mkdir -p "/${SERVER_PATH}"; \
     mkdir -p "/configs"; \
-    mkdir -p "/worlds"; \
     mv "${SERVER_PATH}/${VERSION}/Linux/"* "/${SERVER_PATH}/"; \
     mv "${SERVER_PATH}/${VERSION}/Windows/serverconfig.txt" "/configs/serverconfig.txt"; \
     chmod +x "${SERVER_PATH}/TerrariaServer"*
@@ -69,6 +68,7 @@ RUN if [ "${TARGETARCH}" != "amd64" ]; then \
     fi
 
 # Create symlinks for world paths
+RUN mkdir -p "/worlds"
 RUN ln -sT /${WORLD_PATH} /root/.local/share/Terraria/Worlds
 
 COPY entrypoint.sh /entrypoint.sh
