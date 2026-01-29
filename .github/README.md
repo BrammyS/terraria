@@ -1,3 +1,5 @@
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/brammys/terraria/latest)
+
 # Terraria Server
 
 This image runs the official **Vanilla Terraria** dedicated server inside a container. The image is built for multiple architectures (amd64 and arm64) and is fully configurable via environment variables.
