@@ -1,0 +1,78 @@
+name: Build docker images
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  DOCKER_IMAGE: brammys/terraria
+  GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/terraria
+
+jobs:
+  build:
+    name: Build latest image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute build args
+        id: vars
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "version_no_dots=${GITHUB_REF_NAME//./}" >> "$GITHUB_OUTPUT"
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.DOCKER_IMAGE }}
+            ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=raw,value=latest
+            type=ref,event=tag
+            type=match,pattern=^(\d+)(?:\.\d+){1,3}$,group=1
+            type=match,pattern=^(\d+\.\d+)(?:\.\d+){1,2}$,group=1
+            type=match,pattern=^(\d+\.\d+\.\d+)(?:\.\d+)?$,group=1
+
+      - name: Build and push images (Docker Hub + GHCR)
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          platforms: linux/amd64,linux/arm64
+          context: .
+          file: ./Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.vars.outputs.version_no_dots }}
