@@ -65,10 +65,7 @@ COPY --from=build /${SERVER_PATH} /${SERVER_PATH}
 RUN if [ "${TARGETARCH}" != "amd64" ]; then \
         apt-get update && apt-get install -y ca-certificates mono-runtime && rm -rf /var/lib/apt/lists/*; \
         # Prevent version mismatch issues
-        rm "${SERVER_PATH}/System*" \
-        rm "${SERVER_PATH}/Mono*" \
-        rm "${SERVER_PATH}/monoconfig" \
-        rm "${SERVER_PATH}/mscorlib.dll" \
+        rm -f "${SERVER_PATH}/System*" "${SERVER_PATH}/Mono*" "${SERVER_PATH}/monoconfig" "${SERVER_PATH}/mscorlib.dll"; \
     fi
 
 COPY entrypoint.sh /entrypoint.sh
