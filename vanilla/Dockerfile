@@ -34,7 +34,7 @@ ENV TERRARIA_CONFIG=${CONFIG_PATH}/serverconfig.txt
 ENV TERRARIA_PORT=
 ENV TERRARIA_MAXPLAYERS=
 ENV TERRARIA_MOTD=
-ENV TERRARIA_WORLD=${WORLD_PATH}
+ENV TERRARIA_WORLD=
 ENV TERRARIA_AUTOCREATE=
 ENV TERRARIA_BANLIST=
 ENV TERRARIA_WORLDNAME=
@@ -67,6 +67,9 @@ RUN if [ "${TARGETARCH}" != "amd64" ]; then \
         # Prevent version mismatch issues
         rm -f "${SERVER_PATH}/System*" "${SERVER_PATH}/Mono*" "${SERVER_PATH}/monoconfig" "${SERVER_PATH}/mscorlib.dll"; \
     fi
+
+# Create symlinks for world paths
+RUN ln -sT /${WORLD_PATH} /root/.local/share/Terraria/Worlds
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
