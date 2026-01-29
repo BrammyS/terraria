@@ -16,7 +16,7 @@ All of the following environment variables are supported by the image entrypoint
 
 | Environment variable | Default | Notes |
 |---|---|---|
-| `TERRARIA_CONFIG` | `/terraria-server/configs/serverconfig.txt` | Config file path |
+| `TERRARIA_CONFIG` | `/configs/serverconfig.txt` | Config file path |
 | `TERRARIA_PORT` |  | Publish the same port on TCP and UDP |
 | `TERRARIA_IP` |  | Bind IP address |
 | `TERRARIA_PASSWORD` |  | Server password (masked in logs) |
@@ -38,12 +38,12 @@ All of the following environment variables are supported by the image entrypoint
 
 The image uses the following paths for persistent data:
 
-- Worlds: `/terraria-server/worlds`
-- Configs: `/terraria-server/configs`
+- Worlds: `/worlds`
+- Configs: `/configs`
 
 The image includes a default config file at:
 
-- `/terraria-server/configs/serverconfig.txt`
+- `/configs/serverconfig.txt`
 
 ## Examples
 
@@ -52,8 +52,8 @@ The image includes a default config file at:
 ```bash
 docker run -it --name terraria \
   -p 7777:7777/tcp -p 7777:7777/udp \
-  -v terraria_worlds:/terraria-server/worlds \
-  -v terraria_configs:/terraria-server/configs \
+  -v terraria_worlds:/worlds \
+  -v terraria_configs:/configs \
   brammys/terraria
 ```
 
@@ -62,8 +62,8 @@ docker run -it --name terraria \
 ```bash
 docker run -it --name terraria \
   -p 7777:7777/tcp -p 7777:7777/udp \
-  -v terraria_worlds:/terraria-server/worlds \
-  -v terraria_configs:/terraria-server/configs \
+  -v terraria_worlds:/worlds \
+  -v terraria_configs:/configs \
   -e TERRARIA_AUTOCREATE=2 \
   -e TERRARIA_WORLDNAME=testing \
   -e TERRARIA_SEED=testing \
@@ -75,9 +75,9 @@ docker run -it --name terraria \
 ```bash
 docker run -it --name terraria \
   -p 7777:7777/tcp -p 7777:7777/udp \
-  -v ./terraria_worlds:/terraria-server/worlds \
-  -v ./terraria_configs:/terraria-server/configs \
-  -e TERRARIA_WORLD=/terraria-server/worlds/your_own_world.wld \
+  -v ./terraria_worlds:/worlds \
+  -v ./terraria_configs:/configs \
+  -e TERRARIA_WORLD=/worlds/your_own_world.wld \
   brammys/terraria
 ```
 
@@ -99,15 +99,15 @@ services:
       # TERRARIA_AUTOCREATE: "2"
       # TERRARIA_WORLDNAME: "testing"
       # TERRARIA_SEED: "testing"
-      # TERRARIA_WORLD: "/terraria-server/worlds/testing.wld"
+      # TERRARIA_WORLD: "/worlds/testing.wld"
       # TERRARIA_MAXPLAYERS: "16"
       # TERRARIA_MOTD: "Welcome!"
       # TERRARIA_PASSWORD: "changeme"
       # TERRARIA_SECURE: "1"
       # TERRARIA_NOUPNP: "1"
     volumes:
-      - terraria_worlds:/terraria-server/worlds
-      - terraria_configs:/terraria-server/configs
+      - terraria_worlds:/worlds
+      - terraria_configs:/configs
 
 volumes:
   terraria_worlds:
