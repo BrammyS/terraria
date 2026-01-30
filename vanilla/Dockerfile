@@ -15,9 +15,9 @@ RUN set -eux; \
     mkdir -p "${TEMP_PATH}/${SERVER_PATH}"; \
     unzip "${SERVER_PATH}.zip" -d "${TEMP_PATH}/${SERVER_PATH}"; \
     mkdir -p "/${SERVER_PATH}"; \
-    mkdir -p "/configs"; \
+    mkdir -p "/${DATA_PATH}/configs"; \
     mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Linux/"* "/${SERVER_PATH}/"; \
-    mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Windows/serverconfig.txt" "/configs/serverconfig.txt"; \
+    mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Windows/serverconfig.txt" "/${DATA_PATH}/configs/serverconfig.txt"; \
     chmod +x "${SERVER_PATH}/TerrariaServer"*
 
 # Runtime stage
@@ -27,8 +27,9 @@ ARG VERSION
 
 ENV TARGETARCH=${TARGETARCH}
 ENV SERVER_PATH=/terraria-server
-ENV CONFIG_PATH=/configs
-ENV WORLD_PATH=/worlds
+ENV DATA_PATH=/data
+ENV CONFIG_PATH=/${DATA_PATH}/configs
+ENV WORLD_PATH=/${DATA_PATH}/worlds
 
 # Terraria CLI environment variables
 ENV TERRARIA_CONFIG=${CONFIG_PATH}/serverconfig.txt
