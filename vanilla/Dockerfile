@@ -4,7 +4,7 @@ ARG VERSION
 
 # Download server files
 ENV SERVER_PATH=/terraria-server
-ADD https://terraria.org/api/download/pc-dedicated-server/terraria-server-${VERSION}.zip /${SERVER_PATH}.zip
+ADD https://terraria.org/api/download/pc-dedicated-server/terraria-server-${VERSION}.zip ${SERVER_PATH}.zip
 
 # Install unzip to extract server files
 RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
@@ -16,8 +16,8 @@ RUN set -eux; \
     unzip "${SERVER_PATH}.zip" -d "${TEMP_PATH}/${SERVER_PATH}"; \
     mkdir -p "/${SERVER_PATH}"; \
     mkdir -p "/configs"; \
-    mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Linux/"* "/${SERVER_PATH}/"; \
-    mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Windows/serverconfig.txt" "/configs/serverconfig.txt"; \
+    mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Linux/"* "${SERVER_PATH}/"; \
+    mv "${TEMP_PATH}/${SERVER_PATH}/${VERSION}/Windows/serverconfig.txt" "${SERVER_PATH}/serverconfig.txt"; \
     chmod +x "${SERVER_PATH}/TerrariaServer"*
 
 # Runtime stage

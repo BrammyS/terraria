@@ -55,6 +55,13 @@ print_effective_args() {
   echo "$args_str" | xargs -n 2 echo
 }
 
+copy_default_config() {
+  if [[ ! -f "${TERRARIA_CONFIG}" ]]; then
+    echo "No config file found at ${TERRARIA_CONFIG}, copying default config."
+    cp ${SERVER_PATH}/serverconfig.txt "${TERRARIA_CONFIG}"
+  fi
+}
+
 setup_fifo() {
   rm -f "$FIFO_PATH"
   mkfifo "$FIFO_PATH"
@@ -109,6 +116,7 @@ forward_stdin_to_fifo() {
 trap 'shutdown_gracefully' SIGTERM SIGINT
 
 print_effective_args
+copy_default_config
 setup_fifo
 start_server
 watch_server_and_terminate_self
