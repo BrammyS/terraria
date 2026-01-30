@@ -64,10 +64,13 @@ SLEEP_PID=$!
 shutdown_gracefully() {
     set +e
     echo "Shutdown request received! Stopping Terraria server gracefully..."
-    echo "exit" > /tmp/terraria_input
-    if [ -n "${SERVER_PID:-}" ]; then
+    
+    # Only try to send exit command if server is still running
+    if [ -n "${SERVER_PID:-}" ] && kill -0 "${SERVER_PID}" 2>/dev/null; then
+        timeout 10s echo "exit" > /tmp/terraria_input || true
         wait "${SERVER_PID}"
     fi
+    
     kill "${SLEEP_PID}" 2>/dev/null
     echo "Terraria server has stopped"
     exit 0
@@ -83,7 +86,15 @@ else
 fi
 SERVER_PID=$!
 
-# Forward stdin to pipe (blocking, so no SIGTTIN) and handle EOF
+# Prevent exit loop when server stops unexpectedly
+(
+    while kill -0 $SERVER_PID 2>/dev/null; do
+        sleep 1
+    done
+    kill -TERM $$
+) &
+
+# Forward stdin to pipe
 set +e
 while read -r line; do
     echo "$line" > /tmp/terraria_input
