@@ -155,3 +155,4 @@ docker build --build-arg VERSION=1452 --build-arg TARGETARCH=amd64 -t terraria:l
 ```
 
 Replace `1452` with the desired version number and `amd64` with `arm64` for ARM builds.
+Buildx can also be used to build multi-architecture images for both `amd64` and `arm64` at once.
